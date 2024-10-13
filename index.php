@@ -3,7 +3,7 @@ session_start();
 
 // 检查用户是否已经登录
 if (isset($_SESSION['user_id'])) {
-    header('Location: chatroom.php');  // 如果用户已登录，直接跳转到聊天室
+    header('Location: user_panel.php');  // 如果用户已登录，直接跳转到主页
     exit;
 }
 ?>

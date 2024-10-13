@@ -1,0 +1,122 @@
+/* 通用样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+.btn-manage {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-manage:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+h1, h2 {
+    color: #333;
+}
+
+form {
+    margin-top: 15px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #5c6bc0;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3949ab;
+}
+
+/* 确保 a 标签与按钮样式一致 */
+a {
+    display: inline-block; /* 确保 a 标签看起来像按钮 */
+    padding: 10px 0; /* 调整 a 标签的内边距 */
+    width: 100%; /* a 标签占据100%的宽度 */
+    background-color: #5c6bc0;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+    box-sizing: border-box; /* 确保 padding 不影响宽度 */
+}
+
+a:hover {
+    background-color: #3949ab;
+}
+
+
+/* 聊天室样式 */
+#chatbox {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+#chatbox p {
+    padding: 5px;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#chatbox p:last-child {
+    border-bottom: none;
+}
+
+form input[type="text"] {
+    width: calc(100% - 60px);
+    margin-right: 10px;
+}
+
+form button {
+    width: 50px;
+}

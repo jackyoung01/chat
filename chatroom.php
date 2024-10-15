@@ -106,6 +106,24 @@ $messages->execute([$room_id]);
             background-color: #3949ab;
         }
 
+    #emojiPicker {
+        display: none;  /* 默认隐藏 */
+        position: absolute;  /* 使它浮动在其他内容之上 */
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;  /* 确保它位于页面的最上层 */
+    }
+
+    #emojiPicker span {
+        cursor: pointer;
+        font-size: 24px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+
         .logout, .back-to-panel {
             display: inline-block;
             padding: 10px 20px;
@@ -144,11 +162,13 @@ $messages->execute([$room_id]);
             <?php endwhile; ?>
         </div>
 
-        <!-- 发送消息的表单 -->
-        <form id="messageForm" method="POST">
-            <input type="text" id="messageInput" name="message" placeholder="输入消息" required>
-            <button type="submit">发送</button>
-        </form>
+<!-- 发送消息的表单 -->
+<form id="messageForm" method="POST">
+    <input type="text" id="messageInput" name="message" placeholder="输入消息" required>
+    <button type="button" id="emojiButton">😀</button> <!-- Emoji 按钮 -->
+    <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
+    <button type="submit">发送</button>
+</form>
 
         <!-- 返回用户面板按钮 -->
         <a href="user_panel.php" class="back-to-panel">返回用户面板</a>
@@ -157,69 +177,13 @@ $messages->execute([$room_id]);
         <a href="logout.php" class="logout">退出登录</a>
     </div>
 
+    <!-- 使用 json_encode() 将 PHP 的 room_id 传递给 JavaScript -->
     <script>
-        document.getElementById('messageForm').addEventListener('submit', function(event) {
-            event.preventDefault();  // 阻止表单默认提交行为
-
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value;
-
-            // 检查消息内容是否为空
-            if (!message.trim()) {
-                console.error("不能发送空消息！");
-                return;
-            }
-
-            // 使用 AJAX 发送消息到 send_message.php
-            fetch('send_message.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'message=' + encodeURIComponent(message) + '&room_id=' + encodeURIComponent(<?= $room_id ?>)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // 清空输入框
-                    messageInput.value = '';
-
-                    // 手动刷新消息列表
-                    fetchMessages();
-                } else {
-                    console.error('Error:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending message:', error);
-            });
-        });
-
-        // 自动加载最新消息
-        function fetchMessages() {
-            fetch('fetch_messages.php?room_id=<?= $room_id ?>')
-                .then(response => response.json())
-                .then(data => {
-                    const chatbox = document.getElementById('chatbox');
-                    chatbox.innerHTML = '';  // 清空现有消息
-
-                    data.forEach(message => {
-                        const p = document.createElement('p');
-                        p.innerHTML = `<strong>${message.username}:</strong> ${message.message} <em>(${message.created_at})</em>`;
-                        chatbox.appendChild(p);
-                    });
-
-                    // 自动滚动到底部
-                    chatbox.scrollTop = chatbox.scrollHeight;
-                })
-                .catch(error => console.error('Error fetching messages:', error));
-        }
-
-        // 定时每2秒获取一次新消息
-        setInterval(fetchMessages, 2000);
-
-        // 初始加载消息
-        fetchMessages();
+        const roomId = <?= json_encode($room_id); ?>;
     </script>
+
+    <!-- 引入外部JS文件 -->
+    <script src="src/js/chatroom.js"></script>
+
 </body>
 </html>

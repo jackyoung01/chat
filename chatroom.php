@@ -52,29 +52,31 @@ $messages->execute([$room_id]);
             height: 100vh;
         }
 
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
-        }
+    .container {
+      background-color: white;
+       padding: 20px;
+       border-radius: 8px;
+       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+       width: 600px; /* 增大容器宽度 */
+       text-align: center;
+    }
 
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
+    #chatbox {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 8px;
+        max-height: 500px; /* 增大聊天框的最大高度 */
+        height: 400px; /* 固定聊天框高度 */
+        overflow-y: auto;
+        margin-bottom: 15px;
+        text-align: left;
+    }
 
-        #chatbox {
-            background-color: #e9ecef;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            text-align: left;
-        }
+    form input[type="text"] {
+        width: calc(100% - 100px); /* 调整输入框宽度，适应更宽的容器 */
+        margin-right: 10px;
+        padding: 10px;
+    }
 
         #chatbox p {
             padding: 5px;
@@ -86,43 +88,39 @@ $messages->execute([$room_id]);
             border-bottom: none;
         }
 
-        form input[type="text"] {
-            width: calc(100% - 60px);
-            margin-right: 10px;
-            padding: 10px;
-        }
+form button {
+    width: 80px; /* 调整按钮宽度 */
+    padding: 10px;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        form button {
-            width: 50px;
-            padding: 10px;
-            background-color: #5c6bc0;
-            color: white;
-            border: none;
-            border-radius: 4px;
+form button:hover {
+    background-color: #3949ab;
+}
+
+#emojiPicker {
+    display: none; /* 默认隐藏 */
+    position: absolute; /* 使它浮动在其他内容之上 */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* 确保它位于页面的最上层 */
+    width: 300px; /* 调整 emoji 选择器的宽度 */
+    max-height: 200px; /* 调整 emoji 选择器的最大高度 */
+    overflow-y: auto; /* 如果表情较多，允许滚动 */
+}
+        #emojiPicker span {
             cursor: pointer;
+            font-size: 24px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
         }
-
-        form button:hover {
-            background-color: #3949ab;
-        }
-
-    #emojiPicker {
-        display: none;  /* 默认隐藏 */
-        position: absolute;  /* 使它浮动在其他内容之上 */
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;  /* 确保它位于页面的最上层 */
-    }
-
-    #emojiPicker span {
-        cursor: pointer;
-        font-size: 24px;
-        margin-right: 5px;
-        margin-bottom: 5px;
-        display: inline-block;
-    }
 
         .logout, .back-to-panel {
             display: inline-block;
@@ -162,13 +160,13 @@ $messages->execute([$room_id]);
             <?php endwhile; ?>
         </div>
 
-<!-- 发送消息的表单 -->
-<form id="messageForm" method="POST">
-    <input type="text" id="messageInput" name="message" placeholder="输入消息" required>
-    <button type="button" id="emojiButton">😀</button> <!-- Emoji 按钮 -->
-    <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
-    <button type="submit">发送</button>
-</form>
+        <!-- 发送消息的表单 -->
+        <form id="messageForm">
+            <input type="text" id="messageInput" name="message" placeholder="输入消息" required>
+            <button type="button" id="emojiButton">😀</button> <!-- Emoji 按钮 -->
+            <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
+            <button type="submit">发送</button>
+        </form>
 
         <!-- 返回用户面板按钮 -->
         <a href="user_panel.php" class="back-to-panel">返回用户面板</a>
@@ -184,6 +182,5 @@ $messages->execute([$room_id]);
 
     <!-- 引入外部JS文件 -->
     <script src="src/js/chatroom.js"></script>
-
 </body>
 </html>

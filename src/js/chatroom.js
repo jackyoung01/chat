@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
     const chatbox = document.getElementById('chatbox');
 
-    // AI 相关配置
-    const apiKey = "56bb819254e025346a500068f2f8dddf.rJLyLghELuGTVH9S";
+    // AI 相关配置 本系统调用的智谱清言api接口
+    const apiKey = "";    //输入你在智谱清言的api密钥
     const apiUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
-    const model = "glm-4-flash";
+    const model = "glm-4-flash";    //自选大模型编码
 
     // 初始化对话消息
     let messages = [

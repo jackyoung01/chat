@@ -39,7 +39,7 @@
 
 1. 克隆该仓库：
    ```bash
-   git clone https://github.com/jackyoung01/chat.git
+   git clone https://github.com/jackyoung01/open-chatroom.git
 
 2.配置数据库文件
   db.php

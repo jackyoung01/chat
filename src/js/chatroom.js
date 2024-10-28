@@ -3,13 +3,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const emojiButton = document.getElementById('emojiButton');
     const emojiPickerContainer = document.getElementById('emojiPicker');
     const messageInput = document.getElementById('messageInput');
+    const imageInput = document.getElementById('imageInput');
     const messageForm = document.getElementById('messageForm');
     const chatbox = document.getElementById('chatbox');
 
-    // AI 相关配置 本系统调用的智谱清言api接口
-    const apiKey = "";    //输入你在智谱清言的api密钥
+    // AI 相关配置
+    const apiKey = "56bb819254e025346a500068f2f8dddf.rJLyLghELuGTVH9S"; //输入逆的智谱清言api密钥
     const apiUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
-    const model = "glm-4-flash";    //自选大模型编码
+    const model = "glm-4-flash";
 
     // 初始化对话消息
     let messages = [
@@ -54,53 +55,69 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault(); // 阻止表单默认提交行为
 
         const message = messageInput.value.trim(); // 获取输入的消息并去除空格
+        const imageFile = imageInput.files[0]; // 获取选择的图片文件
 
-        // 检查消息内容是否为空
-        if (!message) {
-            console.error("不能发送空消息！");
+        // 检查消息内容和图片是否都为空
+        if (!message && !imageFile) {
+            console.error("不能发送空消息或图片！");
             return;
         }
 
-        // 显示用户输入的消息
-        addMessageToChatbox("你", message);
+        // 创建 FormData 对象以支持文件上传
+        const formData = new FormData();
+        formData.append('message', message);
+        formData.append('room_id', roomId);
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        // 显示用户输入的消息和图片
+        if (message) {
+            addMessageToChatbox("你", message);
+        }
+        if (imageFile) {
+            addMessageToChatbox("你", `<img src="${URL.createObjectURL(imageFile)}" alt="发送的图片" style="max-width: 200px; max-height: 200px;">`);
+        }
 
         // 发送消息到服务器
-        const response = await fetch('send_message.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `message=${encodeURIComponent(message)}&room_id=${encodeURIComponent(roomId)}`
-        });
+        try {
+            const response = await fetch('send_message.php', {
+                method: 'POST',
+                body: formData
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        // 清空输入框
-        messageInput.value = '';
+            // 清空输入框和文件选择框
+            messageInput.value = '';
+            imageInput.value = '';
 
-        // 检查响应状态
-        if (data.status === 'success') {
-            // 检查是否需要触发 AI
-            if (data.ai_triggered) {
-                // 调用 AI 接口获取回复
-                const aiResponse = await callGLMAPI(message);
-                const assistantReply = aiResponse.choices[0]?.message?.content || "AI没有回复，请稍后再试。";
+            // 检查响应状态
+            if (data.status === 'success') {
+                // 检查是否需要触发 AI
+                if (data.ai_triggered) {
+                    // 调用 AI 接口获取回复
+                    const aiResponse = await callGLMAPI(message);
+                    const assistantReply = aiResponse.choices[0]?.message?.content || "AI没有回复，请稍后再试。";
 
-                // 显示AI的回复
-                addMessageToChatbox("AI", assistantReply);
+                    // 显示AI的回复
+                    addMessageToChatbox("AI", assistantReply);
 
-                // 保存AI的回复到数据库，以便后续显示
-                saveAIMessage(assistantReply);
+                    // 保存AI的回复到数据库，以便后续显示
+                    saveAIMessage(assistantReply);
+                }
+
+                // 手动刷新消息列表
+                fetchMessages();
+            } else {
+                console.error('Error:', data.message);
             }
-
-            // 手动刷新消息列表
-            fetchMessages();
-        } else {
-            console.error('Error:', data.message);
+        } catch (error) {
+            console.error('发送消息时出错:', error);
         }
     });
 
-    // 将消息添加到聊天框中
+    // 将消息添加到聊天框中，支持图片展示
     function addMessageToChatbox(sender, message) {
         const messageElement = document.createElement('p');
         messageElement.innerHTML = `<strong>${sender}：</strong>${message}`;
@@ -155,27 +172,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 自动加载最新消息的函数
-function fetchMessages() {
-    fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}`)
-        .then(response => response.json())
-        .then(data => {
-            chatbox.innerHTML = ''; // 清空现有消息
+    function fetchMessages() {
+        fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}`)
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML = ''; // 清空现有消息
 
-            // 循环遍历每条消息并插入到 chatbox 中
-            data.forEach(message => {
-                // 判断 is_ai 是否为 1 或 true
-                const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
-                const p = document.createElement('p');
-                p.innerHTML = `<strong>${sender}:</strong> ${message.message} <em>(${message.created_at})</em>`;
-                chatbox.appendChild(p);
-            });
+                // 循环遍历每条消息并插入到 chatbox 中
+                data.forEach(message => {
+                    const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
+                    addMessageToChatbox(sender, message.message);
+                });
 
-            // 自动滚动到底部
-            chatbox.scrollTop = chatbox.scrollHeight;
-        })
-        .catch(error => console.error('Error fetching messages:', error));
-}
-
+                // 自动滚动到底部
+                chatbox.scrollTop = chatbox.scrollHeight;
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
 
     // 定时每2秒获取一次新消息
     setInterval(fetchMessages, 2000);

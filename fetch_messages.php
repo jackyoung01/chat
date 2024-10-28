@@ -12,7 +12,6 @@ if (!isset($_SESSION['user_id'])) {
 $room_id = isset($_GET['room_id']) ? (int)$_GET['room_id'] : 1;
 
 // 获取当前聊天室中的消息，包括 is_ai 字段
-// 获取当前聊天室中的消息，包括 is_ai 字段
 $stmt = $pdo->prepare("SELECT m.message, u.username, m.created_at, m.is_ai 
                        FROM chat_messages m 
                        JOIN chat_users u ON m.user_id = u.id 
@@ -22,13 +21,16 @@ $stmt->execute([$room_id]);
 
 $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// 将结果转换为适当的格式并返回 JSON
+// 处理消息内容，确保包含的 <img> 标签不会被转义
 foreach ($messages as &$message) {
-    $message['is_ai'] = (int)$message['is_ai']; // 确保 is_ai 是整数类型
+    // 将 is_ai 转换为整数类型
+    $message['is_ai'] = (int)$message['is_ai'];
+
+    // 处理消息内容，防止 HTML 特殊字符被转义
+    $message['message'] = htmlspecialchars_decode($message['message'], ENT_QUOTES);
 }
 
 // 返回 JSON 格式的响应
 header('Content-Type: application/json');
 echo json_encode($messages);
-
 ?>

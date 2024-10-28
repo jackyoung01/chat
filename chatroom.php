@@ -147,6 +147,81 @@ form button:hover {
         .back-to-panel:hover {
             background-color: #3949ab;
         }
+        
+.chat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.message-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.emoji-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.emoji-button:hover {
+    color: #007bff;
+}
+
+.action-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-input {
+    display: none; /* 隐藏默认的文件输入框 */
+}
+
+.image-upload-label {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+}
+
+.image-upload-label:hover {
+    background-color: #0056b3;
+}
+
+.send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
+}
+
+
     </style>
 </head>
 <body>
@@ -161,12 +236,20 @@ form button:hover {
         </div>
 
         <!-- 发送消息的表单 -->
-        <form id="messageForm">
-            <input type="text" id="messageInput" name="message" placeholder="输入消息" required>
-            <button type="button" id="emojiButton">😀</button> <!-- Emoji 按钮 -->
-            <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
-            <button type="submit">发送</button>
-        </form>
+<form id="messageForm" enctype="multipart/form-data" class="chat-form">
+    <div class="input-container">
+        <input type="text" id="messageInput" name="message" placeholder="输入消息" required class="message-input">
+        <button type="button" id="emojiButton" class="emoji-button">😀</button> <!-- Emoji 按钮 -->
+        <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
+    </div>
+    <div class="action-container">
+        <input type="file" id="imageInput" name="image" accept="image/*" class="image-input">
+        <label for="imageInput" class="image-upload-label">选择图片</label>
+        <button type="submit" class="send-button">发送</button>
+    </div>
+</form>
+
+
 
         <!-- 返回用户面板按钮 -->
         <a href="user_panel.php" class="back-to-panel">返回用户面板</a>

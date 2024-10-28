@@ -86,6 +86,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: formData
             });
 
+            // 检查响应状态是否为 200（成功）
+            if (!response.ok) {
+                console.error(`Error: ${response.status} ${response.statusText}`);
+                return;
+            }
+
             const data = await response.json();
 
             // 清空输入框和文件选择框
@@ -172,22 +178,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 自动加载最新消息的函数
-    function fetchMessages() {
-        fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}`)
-            .then(response => response.json())
-            .then(data => {
-                chatbox.innerHTML = ''; // 清空现有消息
+    async function fetchMessages() {
+        try {
+            const response = await fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}`);
 
-                // 循环遍历每条消息并插入到 chatbox 中
-                data.forEach(message => {
-                    const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
-                    addMessageToChatbox(sender, message.message);
-                });
+            // 检查响应状态是否为 200（成功）
+            if (!response.ok) {
+                console.error(`Error: ${response.status} ${response.statusText}`);
+                return;
+            }
 
-                // 自动滚动到底部
-                chatbox.scrollTop = chatbox.scrollHeight;
-            })
-            .catch(error => console.error('Error fetching messages:', error));
+            const data = await response.json();
+            chatbox.innerHTML = ''; // 清空现有消息
+
+            // 循环遍历每条消息并插入到 chatbox 中
+            data.forEach(message => {
+                const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
+                addMessageToChatbox(sender, message.message);
+            });
+
+            // 自动滚动到底部
+            chatbox.scrollTop = chatbox.scrollHeight;
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
     }
 
     // 定时每2秒获取一次新消息

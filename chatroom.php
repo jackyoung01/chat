@@ -52,31 +52,25 @@ $messages->execute([$room_id]);
             height: 100vh;
         }
 
-    .container {
-      background-color: white;
-       padding: 20px;
-       border-radius: 8px;
-       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-       width: 600px; /* 增大容器宽度 */
-       text-align: center;
-    }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            text-align: center;
+        }
 
-    #chatbox {
-        background-color: #e9ecef;
-        padding: 15px;
-        border-radius: 8px;
-        max-height: 500px; /* 增大聊天框的最大高度 */
-        height: 400px; /* 固定聊天框高度 */
-        overflow-y: auto;
-        margin-bottom: 15px;
-        text-align: left;
-    }
-
-    form input[type="text"] {
-        width: calc(100% - 100px); /* 调整输入框宽度，适应更宽的容器 */
-        margin-right: 10px;
-        padding: 10px;
-    }
+        #chatbox {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 500px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
         #chatbox p {
             padding: 5px;
@@ -88,32 +82,93 @@ $messages->execute([$room_id]);
             border-bottom: none;
         }
 
-form button {
-    width: 80px; /* 调整按钮宽度 */
-    padding: 10px;
-    background-color: #5c6bc0;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        .chat-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
 
-form button:hover {
-    background-color: #3949ab;
-}
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-#emojiPicker {
-    display: none; /* 默认隐藏 */
-    position: absolute; /* 使它浮动在其他内容之上 */
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* 确保它位于页面的最上层 */
-    width: 300px; /* 调整 emoji 选择器的宽度 */
-    max-height: 200px; /* 调整 emoji 选择器的最大高度 */
-    overflow-y: auto; /* 如果表情较多，允许滚动 */
-}
+        .message-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .emoji-button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .emoji-button:hover {
+            color: #007bff;
+        }
+
+        .action-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-input {
+            display: none;
+        }
+
+        .image-upload-label {
+            background-color: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .image-upload-label:hover {
+            background-color: #0056b3;
+        }
+
+        .send-button, .view-online-users {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .send-button:hover, .view-online-users:hover {
+            background-color: #0056b3;
+        }
+
+        #emojiPicker {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
         #emojiPicker span {
             cursor: pointer;
             font-size: 24px;
@@ -148,80 +203,11 @@ form button:hover {
             background-color: #3949ab;
         }
         
-.chat-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
-}
-
-.input-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.message-input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.emoji-button {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-.emoji-button:hover {
-    color: #007bff;
-}
-
-.action-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.image-input {
-    display: none; /* 隐藏默认的文件输入框 */
-}
-
-.image-upload-label {
-    background-color: #007bff;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: inline-block;
-}
-
-.image-upload-label:hover {
-    background-color: #0056b3;
-}
-
-.send-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.send-button:hover {
-    background-color: #0056b3;
-}
-
-
+        .online-users {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -236,20 +222,21 @@ form button:hover {
         </div>
 
         <!-- 发送消息的表单 -->
-<form id="messageForm" enctype="multipart/form-data" class="chat-form">
-    <div class="input-container">
-        <input type="text" id="messageInput" name="message" placeholder="输入消息" required class="message-input">
-        <button type="button" id="emojiButton" class="emoji-button">😀</button> <!-- Emoji 按钮 -->
-        <div id="emojiPicker"></div> <!-- 这个容器将动态加载 emoji.html -->
-    </div>
-    <div class="action-container">
-        <input type="file" id="imageInput" name="image" accept="image/*" class="image-input">
-        <label for="imageInput" class="image-upload-label">选择图片</label>
-        <button type="submit" class="send-button">发送</button>
-    </div>
-</form>
+        <form id="messageForm" enctype="multipart/form-data" class="chat-form">
+            <div class="input-container">
+                <input type="text" id="messageInput" name="message" placeholder="输入消息" required class="message-input">
+                <button type="button" id="emojiButton" class="emoji-button">😀</button> <!-- Emoji 按钮 -->
+                <div id="emojiPicker"></div> <!-- Emoji 选择器 -->
+            </div>
+            <div class="action-container">
+                <input type="file" id="imageInput" name="image" accept="image/*" class="image-input">
+                <label for="imageInput" class="image-upload-label">选择图片</label>
+                <button type="submit" class="send-button">发送</button>
+                <!-- 查看在线用户的按钮，添加 room_id 参数 -->
+                <a href="online_users.php?room_id=<?= $room_id ?>" target="_blank" class="view-online-users">查看在线用户</a>
 
-
+            </div>
+        </form>
 
         <!-- 返回用户面板按钮 -->
         <a href="user_panel.php" class="back-to-panel">返回用户面板</a>
@@ -261,6 +248,46 @@ form button:hover {
     <!-- 使用 json_encode() 将 PHP 的 room_id 传递给 JavaScript -->
     <script>
         const roomId = <?= json_encode($room_id); ?>;
+
+   // 获取在线用户数并更新页面
+        async function updateOnlineUserCount() {
+            try {
+                // 向 online_users.php 发送请求，并带上 room_id 参数
+                const response = await fetch(`online_users.php?room_id=${encodeURIComponent(roomId)}`);
+                const data = await response.json();
+                // 检查是否成功接收到数据并更新页面显示
+                if (data.online_count !== undefined) {
+                    document.getElementById('onlineUserCount').textContent = data.online_count;
+                }
+            } catch (error) {
+                console.error('更新在线用户数失败:', error);
+            }
+        }
+
+        // 定期发送“心跳”请求以更新用户在线状态
+        async function sendHeartbeat() {
+            try {
+                await fetch('heartbeat.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `room_id=${encodeURIComponent(roomId)}`
+                });
+            } catch (error) {
+                console.error('发送心跳请求失败:', error);
+            }
+        }
+
+        // 页面加载时首次获取在线用户数并发送“心跳”
+        updateOnlineUserCount();
+        sendHeartbeat();
+
+        // 每隔30秒更新在线用户数和发送“心跳”请求
+        setInterval(() => {
+            updateOnlineUserCount();
+            sendHeartbeat();
+        }, 30000);
     </script>
 
     <!-- 引入外部JS文件 -->

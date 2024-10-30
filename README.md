@@ -54,7 +54,7 @@
   db.php
   
 3.导入数据库文件
-  chatai.sql
+  open-chatroom.sql
   
 4.配置相关的api密钥
   chatroom.js

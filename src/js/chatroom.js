@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
     const chatbox = document.getElementById('chatbox');
 
-    // AI 相关配置
-    const apiKey = "56bb819254e025346a500068f2f8dddf.rJLyLghELuGTVH9S"; //输入逆的智谱清言api密钥
+    // 智谱清言AI 相关配置
+    const apiKey = ""; //输入你的api密钥
     const apiUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
     const model = "glm-4-flash";
 

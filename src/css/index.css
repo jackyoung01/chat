@@ -1,0 +1,301 @@
+/* 全屏背景，带有轻微的缩放动画 */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('../img/background.jpg'); /* 请将此路径替换为实际的图片路径 */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: zoomIn 20s ease-in-out infinite alternate;
+    color: white;
+}
+
+/* 缩放动画，轻微放大 */
+@keyframes zoomIn {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.08);
+    }
+}
+
+/* 中心内容区样式 */
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* 增加阴影效果 */
+    backdrop-filter: blur(8px);
+    margin-top: 5%; /* 距离顶部的距离 */
+}
+
+h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    animation: fadeInDown 1s ease-out; /* 标题淡入动画 */
+}
+
+p {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    animation: fadeIn 2s ease-out; /* 段落淡入动画 */
+}
+
+.btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #ff6347, #ff4500); /* 按钮渐变颜色 */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: transform 0.3s, background 0.3s; /* 添加过渡效果 */
+}
+
+.btn:hover {
+    background: linear-gradient(45deg, #ff4500, #ff6347); /* 悬停时的渐变颜色反转 */
+    transform: scale(1.1); /* 悬停时的放大效果 */
+}
+
+/* 标题淡入效果 */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 段落淡入效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 水波效果容器 */
+.ripple-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 防止影响其他元素的点击 */
+    overflow: hidden;
+    z-index: 1000; /* 确保水波效果在最上层 */
+}
+
+/* 水波效果 */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    width: 20px; /* 初始大小 */
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.6); /* 白色半透明背景 */
+    transform: scale(0);
+    animation: ripple-animation 0.8s ease-out;
+}
+
+/* 水波动画 */
+@keyframes ripple-animation {
+    to {
+        transform: scale(15); /* 水波扩散 */
+        opacity: 0;
+    }
+}
+
+/* 隐藏的表单 */
+.hidden {
+    display: none;
+}
+
+/* 切换按钮 */
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.toggle-buttons button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-buttons button:hover {
+    background-color: #0056b3;
+}
+
+/* 表单样式 */
+.form {
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.form h2 {
+    margin-bottom: 15px;
+}
+
+.form input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form button:hover {
+    background-color: #218838;
+}
+
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 菜单按钮 */
+.menu-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 15px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 1002; /* 确保在侧边栏之上 */
+}
+
+/* 隐藏的元素 */
+.hidden {
+    display: none;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #333;
+    padding-top: 60px; /* 留出顶部空间给菜单按钮 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* 列表样式 */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 15px 0;
+}
+
+.sidebar button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar button:hover {
+    background-color: #0056b3;
+}
+
+/* 侧边栏打开效果 */
+.sidebar:not(.hidden) {
+    transform: translateX(0);
+}
+
+/* 初始状态侧边栏隐藏 */
+.sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+/* 落叶效果容器 */
+.falling-leaves {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1; /* 确保落叶在背景图片上方 */
+}
+
+.leaf {
+    position: absolute;
+    top: -50px; /* 让叶子从视图顶部开始 */
+    width: 30px;
+    height: 30px;
+    background-image: url('../img/leaf.png'); /* 替换为你的叶子图片路径 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+
+@keyframes fall {
+    0% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100px) rotate(360deg) translateY(100vh); /* 向下飘落 */
+        opacity: 0;
+    }
+}
+

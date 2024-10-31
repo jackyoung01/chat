@@ -37,6 +37,10 @@
 - 可以查看聊天室在线用户数及列表
 ![b89f09b115bb93e74fcf7a6328072af9](https://github.com/user-attachments/assets/e03819be-73e3-49f5-9889-e8a08cabc961)
 
+### 2024.10.31 版本1.5
+- 美化网站前台首页，把登录和注册集成在一起
+![149f12999cf46d06d6d35986e49d25dd](https://github.com/user-attachments/assets/e4f68bac-a347-4201-a47a-7f1dff01d4a4)
+
 ## 技术栈
 
 - PHP

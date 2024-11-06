@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="layout">
         <!-- 侧边栏 -->
         <div class="sidebar" id="sidebar">
-            <button class="toggle-btn" onclick="toggleSidebar()">→</button>
+            <button class="toggle-btn" onclick="toggleSidebar()">➤</button>
             <div class="sidebar-content">
                 <h2>功能菜单</h2>
                 <button onclick="showPanel('profile')" id="btnProfile">个人资料</button>

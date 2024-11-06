@@ -42,14 +42,15 @@ try {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['join_room'])) {
         $room_name = trim($_POST['room_name']);
-        $password = md5(trim($_POST['password']));
+        $password = trim($_POST['password']);
         
         $stmt = $pdo->prepare("SELECT id, password FROM chat_rooms WHERE name = ?");
         $stmt->execute([$room_name]);
         $room = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($room) {
-            if ($password === $room['password']) {
+            // 使用 password_verify 来验证 bcrypt 密码
+            if (password_verify($password, $room['password'])) {
                 $update_stmt = $pdo->prepare("UPDATE chat_users SET room_id = ? WHERE id = ?");
                 $update_stmt->execute([$room['id'], $user_id]);
                 header("Location: chatroom.php?room_id=" . $room['id']);
@@ -62,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } elseif (isset($_POST['create_room'])) {
         $room_name = trim($_POST['room_name']);
-        $password = md5(trim($_POST['password']));
+        $password = password_hash(trim($_POST['password']), PASSWORD_BCRYPT); // 使用 bcrypt 加密密码
         
         $stmt = $pdo->prepare("SELECT id FROM chat_rooms WHERE name = ?");
         $stmt->execute([$room_name]);
@@ -97,14 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = $stmt->rowCount() ? "聊天室已删除。" : "删除失败，请稍后再试。";
     } elseif (isset($_POST['change_password'])) {
         $room_id = (int)$_POST['room_id'];
-        $new_password = md5(trim($_POST['new_password']));
+        $new_password = password_hash(trim($_POST['new_password']), PASSWORD_BCRYPT); // 使用 bcrypt 加密密码
         
         $stmt = $pdo->prepare("UPDATE chat_rooms SET password = ? WHERE id = ? AND created_by = ?");
         $stmt->execute([$new_password, $room_id, $user_id]);
         $message = $stmt->rowCount() ? "密码已成功更新。" : "密码更新失败，请稍后再试。";
     } elseif (isset($_POST['update_user_password'])) {
         // 处理用户密码修改
-        $new_user_password = md5(trim($_POST['new_user_password']));
+        $new_user_password = password_hash(trim($_POST['new_user_password']), PASSWORD_BCRYPT); // 使用 bcrypt 加密密码
         $stmt = $pdo->prepare("UPDATE chat_users SET password = ? WHERE id = ?");
         $stmt->execute([$new_user_password, $user_id]);
         $message = $stmt->rowCount() ? "用户密码已成功更新。" : "密码更新失败，请稍后再试。";

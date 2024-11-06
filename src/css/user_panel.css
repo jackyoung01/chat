@@ -1,0 +1,278 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    background-color: #2c3e50;
+    color: white;
+    width: 180px;
+    padding: 20px 15px;
+    transition: transform 0.3s ease;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar.hidden {
+    transform: translateX(-180px);
+}
+
+/* 三按钮样式 */
+.toggle-btn {
+    position: fixed;
+    left: 180px;
+    top: 110px;
+    background-color: #34495e;
+    color: white;
+    border: none;
+    padding: 5px !important; /* 使用!important强制生效 */
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    transition: all 0.3s ease;
+    width: 24px !important; /* 强制固定宽度 */
+    height: 24px !important; /* 强制固定高度 */
+    opacity: 0.8;
+    z-index: 999;
+    line-height: 1;
+    min-width: unset !important; /* 移除最小宽度 */
+    max-width: 24px !important; /* 限制最大宽度 */
+    display: flex !important; /* 使用flex布局 */
+    align-items: center !important; /* 垂直居中 */
+    justify-content: center !important; /* 水平居中 */
+}
+
+.toggle-btn:hover {
+    background-color: #3498db;
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+
+
+/* 侧边栏标题样式 */
+.sidebar h2 {
+    margin: 0 0 25px 0;
+    color: #ecf0f1;
+    text-align: center;
+    font-size: 16px;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar h2:after {
+    content: '';
+    display: block;
+    height: 15px;
+    width: 100%;
+}
+
+.sidebar button,
+.sidebar .btn-manage,
+.sidebar .logout {
+    width: 140px;
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 8px;
+    text-decoration: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sidebar button {
+    background-color: #34495e;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+    background-color: #3498db;
+    transform: translateY(-2px);
+}
+
+.sidebar .btn-manage {
+    background-color: #2ecc71;
+    margin-top: auto;
+}
+
+.sidebar .btn-manage:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.sidebar .logout {
+    background-color: #e74c3c;
+    margin-top: 5px;
+}
+
+.sidebar .logout:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* 主要内容区域样式 */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    margin-left: 180px;
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.full {
+    margin-left: 0;
+}
+
+/* 内容面板样式 */
+.content-panel {
+    display: none;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.content-panel.active {
+    display: block;
+}
+
+.content-panel h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+/* 用户信息样式 */
+.info-item {
+    display: flex;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.info-item:hover {
+    background-color: #e9ecef;
+}
+
+.info-label {
+    width: 120px;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.info-value {
+    flex-grow: 1;
+    color: #2c3e50;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+}
+
+.error-message {
+    color: #e74c3c;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fadbd8;
+    border-radius: 6px;
+    border-left: 4px solid #e74c3c;
+}
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 160px;
+    }
+    
+    .sidebar.hidden {
+        transform: translateX(-160px);
+    }
+    
+    .toggle-btn {
+        left: 160px;
+    }
+    
+    .sidebar button,
+    .sidebar .btn-manage,
+    .sidebar .logout {
+        width: 120px;
+    }
+    
+    .main-content {
+        margin-left: 160px;
+        padding: 15px;
+    }
+    
+    .info-item {
+        flex-direction: column;
+    }
+    
+    .info-label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}

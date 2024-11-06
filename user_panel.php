@@ -38,7 +38,7 @@ try {
     $message = '数据库错误：' . $e->getMessage();
 }
 
-// 处理聊天室相关的POST请求
+// 处理聊天室和修改密码相关的POST请求
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['join_room'])) {
         $room_name = trim($_POST['room_name']);
@@ -102,6 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare("UPDATE chat_rooms SET password = ? WHERE id = ? AND created_by = ?");
         $stmt->execute([$new_password, $room_id, $user_id]);
         $message = $stmt->rowCount() ? "密码已成功更新。" : "密码更新失败，请稍后再试。";
+    } elseif (isset($_POST['update_user_password'])) {
+        // 处理用户密码修改
+        $new_user_password = md5(trim($_POST['new_user_password']));
+        $stmt = $pdo->prepare("UPDATE chat_users SET password = ? WHERE id = ?");
+        $stmt->execute([$new_user_password, $user_id]);
+        $message = $stmt->rowCount() ? "用户密码已成功更新。" : "密码更新失败，请稍后再试。";
     }
 }
 ?>
@@ -125,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <button onclick="showPanel('join')" id="btnJoin">加入聊天室</button>
                 <button onclick="showPanel('create')" id="btnCreate">创建聊天室</button>
                 <button onclick="showPanel('manage')" id="btnManage">管理我的聊天室</button>
+                <button onclick="showPanel('updatePassword')" id="btnUpdatePassword">修改用户密码</button>
                 <a href="logout.php" class="logout">退出登录</a>
             </div>
         </div>
@@ -154,6 +161,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="info-label">最后房间：</div>
                     <div class="info-value"><?= ($room_id != 'NULL') ? htmlspecialchars($room_id) : '未在任何房间中' ?></div>
                 </div>
+            </div>
+
+            <!-- 修改用户密码面板 -->
+            <div id="updatePasswordPanel" class="content-panel">
+                <h2>修改密码</h2>
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="new_user_password">新密码</label>
+                        <input type="password" id="new_user_password" name="new_user_password" placeholder="输入新密码" required>
+                    </div>
+                    <button type="submit" name="update_user_password" class="submit-btn">更新密码</button>
+                </form>
             </div>
 
             <!-- 加入聊天室面板 -->

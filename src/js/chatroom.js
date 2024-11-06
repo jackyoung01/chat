@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const messageForm = document.getElementById('messageForm');
     const chatbox = document.getElementById('chatbox');
 
-    // 智谱清言AI 相关配置
-    const apiKey = ""; //输入你的api密钥
+    // AI 相关配置
+    const apiKey = "56bb819254e025346a500068f2f8dddf.rJLyLghELuGTVH9S";
     const apiUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
     const model = "glm-4-flash";
 
@@ -20,50 +20,61 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    // 点击 Emoji 按钮时动态加载 emoji.html 并显示/隐藏 emoji 选择器
+    // 记录是否是首次加载
+    let isFirstLoad = true;
+    // 记录最后消息的ID或时间戳
+    let lastMessageId = null;
+
+    // 滚动到底部的函数
+    function scrollToBottom(force = false) {
+        if (force || isFirstLoad) {
+            chatbox.scrollTop = chatbox.scrollHeight;
+            if (isFirstLoad) {
+                isFirstLoad = false;
+            }
+        }
+    }
+
+    // 点击 Emoji 按钮时动态加载 emoji.html
     emojiButton.addEventListener('click', () => {
         if (emojiPickerContainer.innerHTML === '') {
-            // 使用 fetch 动态加载 emoji.html
-            fetch('src/emoji.html') // 确保路径正确
+            fetch('src/emoji.html')
                 .then(response => response.text())
                 .then(data => {
                     emojiPickerContainer.innerHTML = data;
-                    bindEmojiClickEvent(); // 绑定表情点击事件
-                    emojiPickerContainer.style.display = 'block'; // 显示选择器
+                    bindEmojiClickEvent();
+                    emojiPickerContainer.style.display = 'block';
                 })
                 .catch(error => console.error('Error loading emojis:', error));
         } else {
-            // 切换显示/隐藏
             emojiPickerContainer.style.display = emojiPickerContainer.style.display === 'none' ? 'block' : 'none';
         }
     });
 
-    // 绑定点击 Emoji 时的事件
+    // 绑定点击 Emoji 事件
     function bindEmojiClickEvent() {
         const emojis = emojiPickerContainer.querySelectorAll('.emoji');
         emojis.forEach(emoji => {
             emoji.addEventListener('click', function () {
-                const emoji = this.textContent;
-                messageInput.value += emoji; // 将表情插入到输入框中
-                emojiPickerContainer.style.display = 'none'; // 选择完表情后隐藏选择器
+                messageInput.value += this.textContent;
+                emojiPickerContainer.style.display = 'none';
+                messageInput.focus();
             });
         });
     }
 
     // 处理发送消息
     messageForm.addEventListener('submit', async function (event) {
-        event.preventDefault(); // 阻止表单默认提交行为
+        event.preventDefault();
 
-        const message = messageInput.value.trim(); // 获取输入的消息并去除空格
-        const imageFile = imageInput.files[0]; // 获取选择的图片文件
+        const message = messageInput.value.trim();
+        const imageFile = imageInput.files[0];
 
-        // 检查消息内容和图片是否都为空
         if (!message && !imageFile) {
-            console.error("不能发送空消息或图片！");
             return;
         }
 
-        // 创建 FormData 对象以支持文件上传
+        // 创建 FormData
         const formData = new FormData();
         formData.append('message', message);
         formData.append('room_id', roomId);
@@ -71,67 +82,62 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('image', imageFile);
         }
 
-        // 显示用户输入的消息和图片
-        if (message) {
-            addMessageToChatbox("你", message);
-        }
-        if (imageFile) {
-            addMessageToChatbox("你", `<img src="${URL.createObjectURL(imageFile)}" alt="发送的图片" style="max-width: 200px; max-height: 200px;">`);
-        }
-
-        // 发送消息到服务器
         try {
             const response = await fetch('send_message.php', {
                 method: 'POST',
                 body: formData
             });
 
-            // 检查响应状态是否为 200（成功）
             if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
-                return;
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-
-            // 清空输入框和文件选择框
             messageInput.value = '';
             imageInput.value = '';
 
-            // 检查响应状态
+            // 发送成功后强制滚动到底部
+            scrollToBottom(true);
+
             if (data.status === 'success') {
-                // 检查是否需要触发 AI
                 if (data.ai_triggered) {
-                    // 调用 AI 接口获取回复
                     const aiResponse = await callGLMAPI(message);
                     const assistantReply = aiResponse.choices[0]?.message?.content || "AI没有回复，请稍后再试。";
-
-                    // 显示AI的回复
-                    addMessageToChatbox("AI", assistantReply);
-
-                    // 保存AI的回复到数据库，以便后续显示
-                    saveAIMessage(assistantReply);
+                    await saveAIMessage(assistantReply);
                 }
-
-                // 手动刷新消息列表
-                fetchMessages();
-            } else {
-                console.error('Error:', data.message);
             }
         } catch (error) {
             console.error('发送消息时出错:', error);
         }
     });
 
-    // 将消息添加到聊天框中，支持图片展示
+    // 将消息添加到聊天框
     function addMessageToChatbox(sender, message) {
         const messageElement = document.createElement('p');
+        messageElement.classList.add('message-item');
         messageElement.innerHTML = `<strong>${sender}：</strong>${message}`;
+        messageElement.style.opacity = '0';
+        
+        // 保存当前滚动位置
+        const scrollPos = chatbox.scrollTop;
+        const wasAtBottom = (chatbox.scrollHeight - chatbox.scrollTop) === chatbox.clientHeight;
+        
         chatbox.appendChild(messageElement);
-        chatbox.scrollTop = chatbox.scrollHeight; // 自动滚动到底部
+        
+        // 如果之前在底部，则保持在底部
+        if (wasAtBottom) {
+            chatbox.scrollTop = chatbox.scrollHeight;
+        } else {
+            chatbox.scrollTop = scrollPos;
+        }
+        
+        requestAnimationFrame(() => {
+            messageElement.style.transition = 'opacity 0.3s ease-in';
+            messageElement.style.opacity = '1';
+        });
     }
 
-    // 调用GLM-4-Flash模型的API函数
+    // 调用GLM-4-Flash模型的API
     async function callGLMAPI(userMessage) {
         try {
             const response = await fetch(apiUrl, {
@@ -157,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 保存 AI 消息到数据库的函数
+    // 保存 AI 消息
     async function saveAIMessage(message) {
         try {
             const response = await fetch('send_message.php', {
@@ -177,36 +183,62 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 自动加载最新消息的函数
-    async function fetchMessages() {
+    // 更新消息而不改变滚动位置
+    async function updateMessages() {
         try {
-            const response = await fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}`);
+            const response = await fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}&last_id=${lastMessageId || ''}`);
 
-            // 检查响应状态是否为 200（成功）
             if (!response.ok) {
-                console.error(`Error: ${response.status} ${response.statusText}`);
-                return;
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            chatbox.innerHTML = ''; // 清空现有消息
+            
+            // 保存当前滚动位置
+            const scrollPos = chatbox.scrollTop;
+            
+            // 检查是否有新消息
+            if (data.length > 0 && (!lastMessageId || data[data.length - 1].id !== lastMessageId)) {
+                chatbox.innerHTML = '';
+                data.forEach(message => {
+                    const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
+                    const messageElement = document.createElement('p');
+                    messageElement.classList.add('message-item');
+                    messageElement.innerHTML = `<strong>${sender}：</strong>${message.message}`;
+                    chatbox.appendChild(messageElement);
+                });
 
-            // 循环遍历每条消息并插入到 chatbox 中
-            data.forEach(message => {
-                const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
-                addMessageToChatbox(sender, message.message);
-            });
+                // 更新最后消息ID
+                if (data.length > 0) {
+                    lastMessageId = data[data.length - 1].id;
+                }
 
-            // 自动滚动到底部
-            chatbox.scrollTop = chatbox.scrollHeight;
+                // 恢复滚动位置
+                if (!isFirstLoad) {
+                    chatbox.scrollTop = scrollPos;
+                }
+            }
+
+            // 如果是首次加载，滚动到底部
+            if (isFirstLoad) {
+                scrollToBottom(true);
+            }
+
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
     }
 
-    // 定时每2秒获取一次新消息
-    setInterval(fetchMessages, 2000);
+    // 定期更新消息
+    setInterval(updateMessages, 2000);
 
     // 初始加载消息
-    fetchMessages();
+    updateMessages();
+
+    // 点击页面其他区域时隐藏emoji选择器
+    document.addEventListener('click', function(event) {
+        if (!emojiButton.contains(event.target) && !emojiPickerContainer.contains(event.target)) {
+            emojiPickerContainer.style.display = 'none';
+        }
+    });
 });

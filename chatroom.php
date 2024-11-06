@@ -4,7 +4,7 @@ session_start();
 
 // 检查用户是否登录，如果没有登录，重定向到登录页面
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit;
 }
 
@@ -40,7 +40,8 @@ $messages->execute([$room_id]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($room_name) ?></title> <!-- 显示聊天室名称作为页面标题 -->
-    <link rel="stylesheet" href="/src/css/index.css">
+    <link rel="stylesheet" href="src/css/chatroom.css">
+
 </head>
 <body>
     <div class="container">

@@ -184,50 +184,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 更新消息而不改变滚动位置
-    async function updateMessages() {
-        try {
-            const response = await fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}&last_id=${lastMessageId || ''}`);
+   // 更新消息而不改变滚动位置
+async function updateMessages() {
+    try {
+        const response = await fetch(`fetch_messages.php?room_id=${encodeURIComponent(roomId)}&last_id=${lastMessageId || ''}`);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // 保存当前滚动位置
-            const scrollPos = chatbox.scrollTop;
-            
-            // 检查是否有新消息
-            if (data.length > 0 && (!lastMessageId || data[data.length - 1].id !== lastMessageId)) {
-                chatbox.innerHTML = '';
-                data.forEach(message => {
-                    const sender = message.is_ai === 1 || message.is_ai === '1' || message.is_ai === true ? 'AI' : message.username;
-                    const messageElement = document.createElement('p');
-                    messageElement.classList.add('message-item');
-                    messageElement.innerHTML = `<strong>${sender}：</strong>${message.message}`;
-                    chatbox.appendChild(messageElement);
-                });
-
-                // 更新最后消息ID
-                if (data.length > 0) {
-                    lastMessageId = data[data.length - 1].id;
-                }
-
-                // 恢复滚动位置
-                if (!isFirstLoad) {
-                    chatbox.scrollTop = scrollPos;
-                }
-            }
-
-            // 如果是首次加载，滚动到底部
-            if (isFirstLoad) {
-                scrollToBottom(true);
-            }
-
-        } catch (error) {
-            console.error('Error fetching messages:', error);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+
+        // 检查是否在底部，或者是首次加载
+        const atBottom = chatbox.scrollHeight - chatbox.scrollTop === chatbox.clientHeight || isFirstLoad;
+
+        // 如果有新消息，则追加到聊天框
+        data.forEach(message => {
+            const sender = message.is_ai === 1 ? 'AI' : message.username;
+            addMessageToChatbox(sender, message.message);
+            lastMessageId = message.id;
+        });
+
+        // 如果是首次加载或用户在底部，则自动滚动到底部
+        if (atBottom) {
+            scrollToBottom(true);
+        }
+
+        // 更新首次加载标志
+        if (isFirstLoad) isFirstLoad = false;
+
+    } catch (error) {
+        console.error('Error fetching messages:', error);
     }
+}
+
 
     // 定期更新消息
     setInterval(updateMessages, 2000);

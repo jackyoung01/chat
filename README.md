@@ -1,4 +1,4 @@
-# 聊天应用程序
+# 在线聊天应用程序
 
 这是一个使用PHP构建的简单聊天应用程序。它允许用户注册、登录并在聊天室中交流，以及与ai进行互动。该应用程序旨在演示基本的Web开发概念，包括用户身份验证和实时消息传递。
 - 演示网站[点击这里](http://120.55.57.217:11111/)
@@ -44,6 +44,7 @@
 ### 2024.11.7 版本1.6
 - 美化用户中心面板
 - 美化聊天室界面布局
+- 优化聊天室消息记录显示，修复屏闪问题
 ![32b29a9fe5e32d26bebc6774ac6120b4](https://github.com/user-attachments/assets/389a3456-80ff-4652-a30f-debdfe43ed71)
 ![bbf0feed8f8bd1c87711f1121f115b1d](https://github.com/user-attachments/assets/531166ff-59e4-47ab-906a-44acf0e2fb5a)
 ![0b97c91eb71ee7c35281a61d710055dd](https://github.com/user-attachments/assets/e12f4cb0-913f-4227-b1a2-8d7c8a4517bf)
